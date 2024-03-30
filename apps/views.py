@@ -325,6 +325,27 @@ def instance_property_form(request, instance_id, property_type_id):
     })
 
 
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def instance_property_delete(request, instance_id, property_type_id):
+    try:
+        instance = Instance.objects.get(id=instance_id)
+    except Instance.DoesNotExist:
+        messages.error(request, f'Instance with id {instance_id} does not exist')
+        return redirect('apps_instance_list')
+    try:
+        property_type = PropertyType.objects.get(id=property_type_id)
+    except PropertyType.DoesNotExist:
+        messages.error(request, f'Property type with id {property_type_id} does not exist')
+        return redirect('apps_instance_list')
+    if ObjectPropertyRelation.objects.filter(instance_object=instance, property_type=property_type).exists():
+        ObjectPropertyRelation.objects.get(instance_object=instance, property_type=property_type).delete()
+        messages.success(request, f'Property deleted successfully!')
+    else:
+        messages.error(request, f'Property does not exist')
+    return redirect('apps_instance_detail_raw', instance_id=instance_id)
+
+
 def instance_create_wiki_property(request, instance_id):
     # create property type required for wiki
     # See list of required property type in apps/enums.py
