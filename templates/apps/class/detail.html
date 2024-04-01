@@ -25,6 +25,27 @@
     {% if user.is_staff %}
     <a href="{% url 'apps_class_edit' class.id %}" class="btn btn-primary"><i class="mdi mdi-pencil" aria-hidden="true" style="font-size: 20px"></i> Edit</a>
     {% endif %}
+    <h2>Instances</h2>
+    {% if instance_list %}
+        <div class="row gy-2">
+            {% for instance in instance_list %}
+            <div class="col-md-4">
+                <div class="element-card-wrapper">
+                    <div class="element-card-background" style="background: url({% static 'img/login.jpg' %}) center center / cover no-repeat; width: 100%; height: 100%; border-radius: 0.25rem;">
+                        <div class="element-card-body">
+                            <h5 class="card-title">{{ instance.name }}</h5>
+                            <p class="card-text mb-0">Instance ID : {{ instance.id }}</p>
+                            <p class="card-text">Parent Class : <a href="{% url 'apps_class_detail' instance.class_instance.id %}">{{ instance.class_instance.name }}</a></p>
+                            <a href="{% url 'apps_instance_detail' instance.id %}" class="btn btn-primary btn-sm"><i class="mdi mdi-information" aria-hidden="true" style="font-size: 15px"></i> Detail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><i class="mdi mdi-alert-circle-outline"></i> No instance bind to this class</p>
+    {% endif %}
 {% endblock %}
 
 {% block scripts %}

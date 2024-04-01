@@ -14,6 +14,7 @@ urlpatterns = [
     path('instance/<int:instance_id>/edit/', instance_edit, name='apps_instance_edit'),
     path('instance/<int:instance_id>/property/', instance_property_list, name='apps_instance_property_list'),
     path('instance/<int:instance_id>/property/<int:property_type_id>/', instance_property_form, name='apps_instance_property_form'),
+    path('instance/<int:instance_id>/property/<int:property_type_id>/delete', instance_property_delete, name='apps_instance_property_delete'),
     path('instance/<int:instance_id>/create_wiki_property/', instance_create_wiki_property, name='apps_instance_create_wiki_property'),
     path('instance/create/', instance_create, name='apps_instance_create'),
     path('property_type/', property_type_list, name='apps_property_type_list'),

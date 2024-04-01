@@ -19,7 +19,7 @@ def home(request):
         wiki_instance = ObjectPropertyRelation.objects.filter(property_type__name='wikiContent').order_by('?').first().instance_object
         wiki_ready = True
         wiki_content = wiki_instance.have_wiki()
-    except ObjectPropertyRelation.DoesNotExist:
+    except Exception as e:
         wiki_ready = False
         wiki_content = None
         wiki_instance = None
@@ -59,7 +59,8 @@ def class_detail(request, class_id):
         messages.error(request, f'Class with id {class_id} does not exist')
         return redirect('apps_class_list')
     return render(request, 'apps/class/detail.html', {
-        'class': Class.objects.get(id=class_id)
+        'class': Class.objects.get(id=class_id),
+        'instance_list': Instance.objects.filter(class_instance=Class.objects.get(id=class_id))
     })
 
 
@@ -322,6 +323,27 @@ def instance_property_form(request, instance_id, property_type_id):
         'limitation_list': json_to_list(property_type.limitation),
         'old_property': old_property
     })
+
+
+@login_required
+@user_passes_test(lambda u: u.is_staff)
+def instance_property_delete(request, instance_id, property_type_id):
+    try:
+        instance = Instance.objects.get(id=instance_id)
+    except Instance.DoesNotExist:
+        messages.error(request, f'Instance with id {instance_id} does not exist')
+        return redirect('apps_instance_list')
+    try:
+        property_type = PropertyType.objects.get(id=property_type_id)
+    except PropertyType.DoesNotExist:
+        messages.error(request, f'Property type with id {property_type_id} does not exist')
+        return redirect('apps_instance_list')
+    if ObjectPropertyRelation.objects.filter(instance_object=instance, property_type=property_type).exists():
+        ObjectPropertyRelation.objects.get(instance_object=instance, property_type=property_type).delete()
+        messages.success(request, f'Property deleted successfully!')
+    else:
+        messages.error(request, f'Property does not exist')
+    return redirect('apps_instance_detail_raw', instance_id=instance_id)
 
 
 def instance_create_wiki_property(request, instance_id):
