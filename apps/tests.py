@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
-from apps.models import Class
+from apps.models import Class, PropertyType
 
 
 class BaseTestCase(TestCase):
@@ -153,3 +153,113 @@ class TestInstanceCreateWikiProperty(BaseTestCase):
         response = self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, f'/login/?next=/instance/1/create_wiki_property/')
+
+
+class TestAddWikiProperty(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        class_name = 'Class A'
+        class_instance_name = 'Instance A'
+        class_instance = Class.objects.create(name=class_name)
+        self.instance = class_instance.instance_set.create(name=class_instance_name)
+        self.login()
+
+    def test_add_wiki_content(self):
+        self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
+        wiki_content_property_id = PropertyType.objects.get(name='wikiContent', class_instance_id=self.instance.class_instance.id).id
+        response = self.client.get(f'/instance/{self.instance.id}/property/{wiki_content_property_id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'wikiContent')
+        self.assertContains(response, 'No limitation set')
+        self.assertContains(response, 'name="value"')
+        # wikiContent is markdown and use textarea for input
+        self.assertContains(response, 'class="form-control textarea"')
+        response = self.client.post(f'/instance/{self.instance.id}/property/{wiki_content_property_id}/', {'value': 'contentTESTTEST'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f'/instance/{self.instance.id}/raw')
+        response = self.client.get(f'/instance/{self.instance.id}/raw')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, f'ID : {wiki_content_property_id}')
+        self.assertContains(response, 'contentTESTTEST')
+
+    def test_add_wiki_image(self):
+        self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
+        wiki_image_property_id = PropertyType.objects.get(name='wikiImage', class_instance_id=self.instance.class_instance.id).id
+        response = self.client.get(f'/instance/{self.instance.id}/property/{wiki_image_property_id}/')
+        self.assertEqual(response.status_code, 200)
+        # Just test that the form contains the image input
+        self.assertContains(response, 'wikiImage')
+        self.assertContains(response, 'No limitation set')
+        self.assertContains(response, 'type="file"')
+        self.assertContains(response, 'accept="image/*"')
+
+    def test_add_wiki_title(self):
+        self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
+        wiki_title_property_id = PropertyType.objects.get(name='wikiTitle',
+                                                          class_instance_id=self.instance.class_instance.id).id
+        response = self.client.get(f'/instance/{self.instance.id}/property/{wiki_title_property_id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'wikiTitle')
+        # Check limitation
+        self.assertContains(response, 'max_length : 255')
+        self.assertContains(response, 'min_length : 1')
+        self.assertContains(response, 'class="form-control textinput"')
+        response = self.client.post(f'/instance/{self.instance.id}/property/{wiki_title_property_id}/', {'value': 'titleTEST'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f'/instance/{self.instance.id}/raw')
+        response = self.client.get(f'/instance/{self.instance.id}/raw')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'titleTEST')
+
+    def test_add_wiki_property_not_login(self):
+        self.logout()
+        response = self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f'/login/?next=/instance/1/create_wiki_property/')
+        response = self.client.get(f'/instance/{self.instance.id}/property/1/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, f'/login/?next=/instance/1/property/1/')
+
+    def test_wiki_page_after_adding_properties(self):
+        self.test_add_wiki_title()
+        self.test_add_wiki_content()
+        self.test_add_wiki_image()
+        response = self.client.get(f'/instance/{self.instance.id}/wiki')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'titleTEST')
+        self.assertContains(response, 'contentTESTTEST')
+
+    def test_homepage(self):
+        self.test_add_wiki_title()
+        self.test_add_wiki_content()
+        self.test_add_wiki_image()
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Home')
+        self.assertContains(response, 'Total Class')
+        self.assertContains(response, '1')
+        self.assertContains(response, 'Total Instance')
+        self.assertContains(response, '1')
+
+
+class TestPropertyType(BaseTestCase):
+    def setUp(self):
+        super().setUp()
+        class_name = 'Class A'
+        class_instance_name = 'Instance A'
+        class_instance = Class.objects.create(name=class_name)
+        self.instance = class_instance.instance_set.create(name=class_instance_name)
+        self.login()
+
+    def test_property_type(self):
+        # Create wiki properties for testing
+        self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
+        response = self.client.get(f'/instance/{self.instance.id}/property/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Property Type')
+        self.assertContains(response, 'wikiContent')
+        self.assertContains(response, 'Raw type : Markdown')
+        self.assertContains(response, 'wikiImage')
+        self.assertContains(response, 'Raw type : Image')
+        self.assertContains(response, 'wikiTitle')
+        self.assertContains(response, 'Raw type : String')
