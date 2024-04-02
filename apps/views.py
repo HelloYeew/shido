@@ -346,6 +346,8 @@ def instance_property_delete(request, instance_id, property_type_id):
     return redirect('apps_instance_detail_raw', instance_id=instance_id)
 
 
+@login_required()
+@user_passes_test(lambda u: u.is_staff)
 def instance_create_wiki_property(request, instance_id):
     # create property type required for wiki
     # See list of required property type in apps/enums.py
