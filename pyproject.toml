@@ -19,6 +19,7 @@ sentry-sdk = {extras = ["django"], version = "^1.40.0"}
 markdown = "^3.5.2"
 drf-yasg = "^1.21.6"
 django-cors-headers = "^4.3.1"
+coverage = "^7.4.4"
 
 
 [build-system]
