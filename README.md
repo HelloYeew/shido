@@ -79,7 +79,6 @@ poetry run python manage.py runserver
 ```commandline
 python -m coverage run --source='.' manage.py test
 python -m coverage html
-
 ```
 
 ### 📊 Progression
