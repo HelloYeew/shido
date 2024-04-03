@@ -53,6 +53,46 @@ class TestClassList(BaseTestCase):
             self.assertContains(response, name)
 
 
+class TestClassCreate(BaseTestCase):
+    def test_class_create(self):
+        self.login()
+        response = self.client.get('/class/create/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Create a new class')
+        response = self.client.post('/class/create/', {'name': 'Class A'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/class/')
+
+    def test_class_create_not_login(self):
+        self.logout()
+        response = self.client.get('/class/create/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/login/?next=/class/create/')
+        response = self.client.post('/class/create/', {'name': 'Class A'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/login/?next=/class/create/')
+
+    def test_class_create_not_staff(self):
+        self.user.is_staff = False
+        self.user.save()
+        self.login()
+        response = self.client.get('/class/create/')
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/login/?next=/class/create/')
+        response = self.client.post('/class/create/', {'name': 'Class A'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/login/?next=/class/create/')
+
+    def test_class_create_same_name(self):
+        self.login()
+        response = self.client.post('/class/create/', {'name': 'Class A'})
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, '/class/')
+        response = self.client.post('/class/create/', {'name': 'Class A'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'already exists')
+
+
 class TestClassDetail(BaseTestCase):
     def test_class_detail(self):
         class_name = 'Class A'
@@ -214,6 +254,23 @@ class TestAddWikiProperty(BaseTestCase):
         response = self.client.get(f'/instance/{self.instance.id}/raw')
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'titleTEST')
+
+    def test_add_wiki_title_failed(self):
+        self.client.get(f'/instance/{self.instance.id}/create_wiki_property/')
+        wiki_title_property_id = PropertyType.objects.get(name='wikiTitle',
+                                                          class_instance_id=self.instance.class_instance.id).id
+        property = PropertyType.objects.get(id=wiki_title_property_id)
+        property.limitation = {'max_length': 255, 'min_length': 5}
+        property.save()
+        response = self.client.get(f'/instance/{self.instance.id}/property/{wiki_title_property_id}/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'wikiTitle')
+        response = self.client.post(f'/instance/{self.instance.id}/property/{wiki_title_property_id}/', {'value': 'x'*10000})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'The value must not be longer than')
+        response = self.client.post(f'/instance/{self.instance.id}/property/{wiki_title_property_id}/', {'value': 'x'})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'The value must not be shorter than')
 
     def test_add_wiki_property_not_login(self):
         self.logout()

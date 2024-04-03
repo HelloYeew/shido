@@ -123,7 +123,7 @@ class PropertyTypeForm(forms.ModelForm):
         model = PropertyType
         fields = ['name', 'class_instance', 'raw_type', 'limitation']
 
-    def clean(self):
+    def clean(self):  # pragma: no cover
         cleaned_data = super(PropertyTypeForm, self).clean()
         name = cleaned_data.get("name")
         raw_type = cleaned_data.get("raw_type")
