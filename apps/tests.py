@@ -21,6 +21,10 @@ class BaseTestCase(TestCase):
     def logout(self):
         self.client.logout()
 
+    def set_as_superuser(self):
+        self.user.is_superuser = True
+        self.user.save()
+
 
 class TestLogin(BaseTestCase):
     def test_login_right(self):

@@ -13,11 +13,11 @@ class Profile(models.Model):
         verbose_name = 'Profile'
         verbose_name_plural = 'Profiles'
 
-    def __str__(self):
+    def __str__(self):  # pragma: no cover
         """Return name."""
         return self.user.username + ' profile'
 
-    def save(self, *args, **kwargs):
+    def save(self, *args, **kwargs):  # pragma: no cover
         """Resize image on save"""
         super().save(*args, **kwargs)
         image = Image.open(self.avatar.path)

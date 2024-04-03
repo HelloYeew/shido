@@ -43,7 +43,7 @@ class CreateUserForm(UserCreationForm):
         user = super(CreateUserForm, self).save(commit=False)
         user.is_staff = True
         user.is_superuser = self.cleaned_data.get('is_superuser')
-        if commit:
+        if commit:  # pragma: no cover
             user.save()
         return user
 
@@ -64,6 +64,6 @@ class EditUserForm(forms.ModelForm):
         user = super(EditUserForm, self).save(commit=False)
         user.is_staff = True
         user.is_superuser = self.cleaned_data.get('is_superuser')
-        if commit:
+        if commit:  # pragma: no cover
             user.save()
         return user

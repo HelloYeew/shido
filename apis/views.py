@@ -44,7 +44,7 @@ def get_property_type_from_class(request):
     """
     try:
         class_id = request.GET.get('class', None)
-        if class_id is None:
+        if class_id is None or class_id == '':
             return JsonResponse({
                 'message': 'No class ID provided'
             }, status=400)
@@ -70,7 +70,7 @@ def get_instance_from_class(request):
     """
     try:
         class_id = request.GET.get('class', None)
-        if class_id is None:
+        if class_id is None or class_id == '':
             return JsonResponse({
                 'message': 'No class ID provided'
             }, status=400)

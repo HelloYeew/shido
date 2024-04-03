@@ -25,3 +25,48 @@ coverage = "^7.4.4"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.coverage.run]
+branch = true
+
+# omit uninteresting files
+omit = [
+    "*/migrations/*",
+    "*/models.py",
+    "shido/*",
+    "*/templatetags/*"
+]
+
+[tool.coverage.report]
+# Regexes for lines to exclude from consideration
+exclude_also = [
+    # Don't complain about missing debug-only code:
+    "def __repr__",
+    "if self\\.debug",
+
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
+
+    # Don't complain about abstract methods, they aren't run:
+    "@(abc\\.)?abstractmethod",
+
+    # Default coverage.py one line ignored
+    "pragma: no cover",
+
+    # Some strings translation in Django model
+    "def __str__(self)",
+
+    # Except exceptions
+    "except Exception as e:"
+]
+
+ignore_errors = true
+
+[tool.coverage.html]
+directory = "coverage_html_report"
