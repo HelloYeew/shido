@@ -60,7 +60,8 @@ def class_detail(request, class_id):
         return redirect('apps_class_list')
     return render(request, 'apps/class/detail.html', {
         'class': Class.objects.get(id=class_id),
-        'instance_list': Instance.objects.filter(class_instance=Class.objects.get(id=class_id))
+        'instance_list': Instance.objects.filter(class_instance=Class.objects.get(id=class_id)),
+        'property_type_list': PropertyType.objects.filter(class_instance=Class.objects.get(id=class_id))
     })
 
 
@@ -387,7 +388,8 @@ def instance_create_wiki_property(request, instance_id):
 
 def property_type_list(request):
     return render(request, 'apps/property_type/list.html', {
-        'all_property_type': PropertyType.objects.all()
+        'all_property_type': PropertyType.objects.all(),
+        'all_classes': Class.objects.all()
     })
 
 
@@ -415,5 +417,6 @@ def property_type_detail(request, property_type_id):
     property_type = PropertyType.objects.get(id=property_type_id)
     return render(request, 'apps/property_type/detail.html', {
         'property_type': property_type,
-        'limitation_list': json_to_list(property_type.limitation)
+        'limitation_list': json_to_list(property_type.limitation),
+        'all_property_value': ObjectPropertyRelation.objects.filter(property_type=property_type)
     })

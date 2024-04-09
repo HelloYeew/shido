@@ -1,5 +1,7 @@
 {% extends "apps/base.html" %}
 {% load static %}
+{% load markdown_converter %}
+{% load object_renderer %}
 
 {% block title %}{{ property_type.name }}{% endblock %}
 
@@ -31,6 +33,44 @@
     </ul>
     {% else %}
     <p><i class="mdi mdi-alert-circle-outline"></i> No limitation set</p>
+    {% endif %}
+    <h3>Available Properties Value In Instance</h3>
+    {% if all_property_value %}
+    {% for value in all_property_value %}
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <p><a href="{% url 'apps_instance_detail' value.instance_object.id %}">{{ value.instance_object.name }}</a></p>
+            <p>ID : {{ value.property_type.id }}</p>
+            {% if user.is_authenticated %}
+            <p><a href="{% url 'apps_instance_property_form' value.instance_object.id value.property_type.id %}" class="btn btn-sm btn-primary"><i class="mdi mdi-pencil-plus" aria-hidden="true" style="font-size: 14px"></i> Edit</a></p>
+            <p><a href="{% url 'apps_instance_property_delete' value.instance_object.id value.property_type.id %}" class="btn btn-sm btn-danger"><i class="mdi mdi-delete" aria-hidden="true" style="font-size: 14px"></i> Delete</a></p>
+            {% endif %}
+        </div>
+        <div class="col-md-9">
+            {% if value.property_type.raw_type == 'image' %}
+            <img src="{{ value.raw_value }}" alt="{{ value.property_type.name }}" style="max-width: 75%">
+            {% elif value.property_type.raw_type == 'file' %}
+            <a href="{{ value.raw_value }}" target="_blank" rel="noopener noreferrer">{{ value.raw_value }}</a>
+            {% elif value.property_type.raw_type == 'markdown' %}
+            <div class="markdown">
+                {{ value.raw_value|convert_markdown|safe }}
+            </div>
+            {% elif value.property_type.raw_type == 'instance' %}
+            {{ value.raw_value|render_instance|safe }}
+            {% elif value.property_type.raw_type == 'class' %}
+            {{ value.raw_value|render_class|safe }}
+            {% elif value.property_type.raw_type == 'instance_list' %}
+            {{ value.raw_value|render_instance_list|safe }}
+            {% elif value.property_type.raw_type == 'url' %}
+            {{ value.raw_value|render_url|safe }}
+            {% else %}
+            <p>{{ value.raw_value }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p><i class="mdi mdi-alert-circle-outline"></i> No property value set in instance</p>
     {% endif %}
 {% endblock %}
 
