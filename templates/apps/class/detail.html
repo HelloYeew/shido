@@ -25,7 +25,7 @@
     {% if user.is_staff %}
     <a href="{% url 'apps_class_edit' class.id %}" class="btn btn-primary"><i class="mdi mdi-pencil" aria-hidden="true" style="font-size: 20px"></i> Edit</a>
     {% endif %}
-    <h2>Instances</h2>
+    <h2 class="my-2">Instances</h2>
     {% if instance_list %}
         <div class="row gy-2">
             {% for instance in instance_list %}
@@ -45,6 +45,28 @@
         </div>
     {% else %}
         <p><i class="mdi mdi-alert-circle-outline"></i> No instance bind to this class</p>
+    {% endif %}
+    <h2 class="my-2">Property</h2>
+    {% if property_type_list %}
+        <div class="row gy-2">
+            {% for property in property_type_list %}
+            <div class="col-md-4">
+                <div class="element-card-wrapper">
+                    <div class="element-card-background" style="background: url({% static 'img/login.jpg' %}) center center / cover no-repeat; width: 100%; height: 100%; border-radius: 0.25rem;">
+                        <div class="element-card-body">
+                            <h5 class="card-title">{{ property.name }}</h5>
+                            <p class="card-text mb-0">ID : {{ property.id }}</p>
+                            <p class="card-text mb-0">Class : <a href="{% url 'apps_class_detail' property.class_instance.id %}">{{ property.class_instance.name }}</a></p>
+                            <p class="card-text">Raw type : {{ property.get_raw_type_display }}</p>
+                            <a href="{% url 'apps_property_type_detail' property.id %}" class="btn btn-primary btn-sm"><i class="mdi mdi-information" aria-hidden="true" style="font-size: 15px"></i> Detail</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><i class="mdi mdi-alert-circle-outline"></i> No property bind to this class</p>
     {% endif %}
 {% endblock %}
 
