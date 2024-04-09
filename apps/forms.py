@@ -15,7 +15,7 @@ class ClassForm(forms.ModelForm):
                 'placeholder': 'Animal'
             }
         ),
-        help_text='Enter the name of the class'
+        help_text='Enter the name of the class.'
     )
 
     class Meta:
@@ -41,7 +41,7 @@ class InstanceForm(forms.ModelForm):
                 'placeholder': 'Alpaca'
             }
         ),
-        help_text='Enter the name of the instance'
+        help_text='Enter the name of the instance.'
     )
 
     class_instance = forms.ModelChoiceField(
@@ -51,7 +51,7 @@ class InstanceForm(forms.ModelForm):
                 'class': 'form-control'
             }
         ),
-        help_text='Select the class that this instance will be in'
+        help_text='Select the class that this instance belongs to.'
     )
 
     class Meta:
@@ -69,7 +69,7 @@ class InstanceForm(forms.ModelForm):
                 code='invalid'
             )
         if not name.isalnum():
-            self.add_error('name', f'The instance name must not contain special symbol or space')
+            self.add_error('name', f'The instance name must not contain any special symbol or space')
         return cleaned_data
 
 
@@ -83,7 +83,7 @@ class PropertyTypeForm(forms.ModelForm):
                 'placeholder': 'haveLegs'
             }
         ),
-        help_text='Enter the name of the property type'
+        help_text='Enter the name of the property type.'
     )
 
     class_instance = forms.ModelChoiceField(
@@ -94,7 +94,7 @@ class PropertyTypeForm(forms.ModelForm):
                 'class': 'form-control'
             }
         ),
-        help_text='Select the class that can have this property type'
+        help_text='Select the class that can have this property type.'
     )
 
     raw_type = forms.ChoiceField(
@@ -105,7 +105,7 @@ class PropertyTypeForm(forms.ModelForm):
                 'class': 'form-control'
             }
         ),
-        help_text='Select the raw type of the property type'
+        help_text='Select the raw type of the property type.'
     )
 
     limitation = forms.JSONField(
@@ -116,7 +116,7 @@ class PropertyTypeForm(forms.ModelForm):
             }
         ),
         required=False,
-        help_text='Enter the limitation of the property type in JSON format, if want to use default, leave it blank'
+        help_text='Enter the limitation of this property type in JSON format, default limitation will be used if left blank.'
     )
 
     class Meta:
@@ -130,10 +130,10 @@ class PropertyTypeForm(forms.ModelForm):
         class_instance = cleaned_data.get("class_instance")
         exist_property_type = PropertyType.objects.filter(name=name, class_instance=class_instance, raw_type=raw_type)
         if name in WIKI_PROPERTY_TYPE_LIST:
-            self.add_error('name', f'The property type with name {name} is reserved for wiki, see the list for prohibited name above')
+            self.add_error('name', f'The property type with name {name} is reserved for wiki, see the list for prohibited names above.')
         if exist_property_type.exists():
             raise forms.ValidationError(
-                f"The property type with name {name} already exists in {class_instance} with raw type {raw_type}",
+                f"The property type with the name {name} already exists in {class_instance} with the raw type {raw_type}",
                 code='invalid'
             )
         # check if the limitation is valid
@@ -141,7 +141,7 @@ class PropertyTypeForm(forms.ModelForm):
         if limitation:
             # no duplication key in JSON
             if len(limitation) != len(set(limitation.keys())):
-                self.add_error('limitation', f'The limitation must not have duplication key')
+                self.add_error('limitation', f'The limitation must not have a duplication key')
             # remove the key that is not allowed from template
             need_remove = []
             for key in limitation.keys():
@@ -211,7 +211,7 @@ class ObjectPropertyStringForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -244,7 +244,7 @@ class ObjectPropertyNumberForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -271,7 +271,7 @@ class ObjectPropertyFloatForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -297,7 +297,7 @@ class ObjectPropertyBooleanForm(forms.Form):
     value = forms.BooleanField(
         label='Value',
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-        help_text='Enter the value of the property',
+        help_text='Enter the value of the property.',
         required=False
     )
 
@@ -316,7 +316,7 @@ class ObjectPropertyDateForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -334,7 +334,7 @@ class ObjectPropertyDateTimeForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -353,7 +353,7 @@ class ObjectPropertyMarkdownForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -371,7 +371,7 @@ class ObjectPropertyImageForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -389,7 +389,7 @@ class ObjectPropertyFileForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -408,7 +408,7 @@ class ObjectPropertyInstanceForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Select the value of the property'
+        help_text='Select the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -417,7 +417,7 @@ class ObjectPropertyInstanceForm(forms.Form):
         if self.initial_value:
             self.base_fields['value'].initial = self.initial_value
         if self.class_id != 0:
-            self.base_fields['value'].help_text = f'Select the value of the property (only instance in {Class.objects.get(id=self.class_id)} will be shown due to the limitation)'
+            self.base_fields['value'].help_text = f'Select the value of the property (only instances in {Class.objects.get(id=self.class_id)} will be shown due to the limitation)'
             self.base_fields['value'].queryset = Instance.objects.filter(class_instance__id=self.class_id)
         super(ObjectPropertyInstanceForm, self).__init__(*args, **kwargs)
 
@@ -431,7 +431,7 @@ class ObjectPropertyInstanceListForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Select the value of the property'
+        help_text='Select the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -441,7 +441,7 @@ class ObjectPropertyInstanceListForm(forms.Form):
             # initial value will be served as a list of instance id
             self.base_fields['value'].initial = Instance.objects.filter(id__in=self.initial_value)
         if self.class_id_list:
-            self.base_fields['value'].help_text = f'Select the value of the property (only instance in {Class.objects.filter(id__in=self.class_id_list).values_list("name", flat=True)} will be shown due to the limitation)'
+            self.base_fields['value'].help_text = f'Select the value of the property (only instances in {Class.objects.filter(id__in=self.class_id_list).values_list("name", flat=True)} will be shown due to the limitation)'
             self.base_fields['value'].queryset = Instance.objects.filter(class_instance__id__in=self.class_id_list)
         super(ObjectPropertyInstanceListForm, self).__init__(*args, **kwargs)
 
@@ -454,7 +454,7 @@ class ObjectPropertyJSONForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property in JSON format'
+        help_text='Enter the value of the property in JSON format.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -473,7 +473,7 @@ class ObjectPropertyClassForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Select the value of the property'
+        help_text='Select the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
@@ -491,7 +491,7 @@ class ObjectPropertyURLForm(forms.Form):
                 'class': 'form-control'
             }
         ),
-        help_text='Enter the value of the property'
+        help_text='Enter the value of the property.'
     )
 
     def __init__(self, *args, **kwargs):
