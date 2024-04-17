@@ -26,8 +26,7 @@
                 <div class="element-card-background" style="background: url({% static 'img/login.jpg' %}) center center / cover no-repeat; width: 100%; height: 100%; border-radius: 0.25rem;">
                     <div class="element-card-body">
                         <h5 class="card-title">{{ class.name }}</h5>
-                        <p class="card-text">Class ID : {{ class.id }}</p>
-                        <a href="{% url 'apps_class_detail' class.id %}" class="btn btn-primary btn-sm"><i class="mdi mdi-information" aria-hidden="true" style="font-size: 15px"></i> Detail</a>
+                        <a href="{% url 'apps_class_detail' class.id %}" class="btn btn-primary btn-sm mt-3"><i class="mdi mdi-information" aria-hidden="true" style="font-size: 15px"></i> Detail</a>
                     </div>
                 </div>
             </div>

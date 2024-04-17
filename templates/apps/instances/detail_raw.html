@@ -35,7 +35,6 @@
     <div class="row mb-3">
         <div class="col-md-3">
             <p>{{ property.property_type.name }}</p>
-            <p>ID : {{ property.id }}</p>
             {% if user.is_authenticated %}
             <p><a href="{% url 'apps_instance_property_form' instance.id property.property_type.id %}" class="btn btn-sm btn-primary"><i class="mdi mdi-pencil-plus" aria-hidden="true" style="font-size: 14px"></i> Edit</a></p>
             <p><a href="{% url 'apps_instance_property_delete' instance.id property.property_type.id %}" class="btn btn-sm btn-danger"><i class="mdi mdi-delete" aria-hidden="true" style="font-size: 14px"></i> Delete</a></p>
