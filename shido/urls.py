@@ -36,7 +36,8 @@ urlpatterns = [
     # path('register/', register, name='register'),
     path('', include('apps.urls')),
     path('users/', include('users.urls')),
-    path('api/', include('apis.urls'))
+    path('api/', include('apis.urls')),
+    path('martor/', include('martor.urls'))
 ]
 
 if config('ENABLE_DJANGO_ADMIN', cast=bool, default=False):

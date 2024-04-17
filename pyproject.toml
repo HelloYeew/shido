@@ -20,6 +20,7 @@ markdown = "^3.5.2"
 drf-yasg = "^1.21.6"
 django-cors-headers = "^4.3.1"
 coverage = "^7.4.4"
+martor = "^1.6.44"
 
 
 [build-system]

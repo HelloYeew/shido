@@ -1,4 +1,5 @@
 from django import forms
+from martor.fields import MartorFormField
 
 from apps.models import Class, Instance, RAW_TYPE_CHOICES, PropertyType, \
     type_limitation_template
@@ -345,16 +346,7 @@ class ObjectPropertyDateTimeForm(forms.Form):
 
 
 class ObjectPropertyMarkdownForm(forms.Form):
-    # TODO: Change this to markdown editor
-    value = forms.CharField(
-        label='Value',
-        widget=forms.Textarea(
-            attrs={
-                'class': 'form-control'
-            }
-        ),
-        help_text='Enter the value of the property.'
-    )
+    value = MartorFormField()
 
     def __init__(self, *args, **kwargs):
         self.initial_value = kwargs.pop('initial_value')
