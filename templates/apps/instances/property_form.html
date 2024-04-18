@@ -28,9 +28,9 @@
     <h1 style="padding-top: 1rem; padding-bottom: 1rem;">Add or edit property for {{ instance.name }}</h1>
     <p></p>
     {% if old_property %}
-    <p>You are editing property <b>{{ old_property.name }}</b> for instance <b>{{ instance.name }}</b> that using raw type <b>{{ old_property.raw_type }}</b> with limitation :</p>
+    <p>You are editing property <b>{{ old_property.name }}</b> for instance <b>{{ instance.name }}</b> that using raw type <b>{{ old_property.property_type.raw_type }}</b> with limitation :</p>
     {% else %}
-    <p>You are adding property type <b>{{ property_type.name }}</b> for instance <b>{{ instance.name }}</b> that using raw type <b>{{ property_type.raw_type }}</b> with limitation :</p>
+    <p>You are adding property type <b>{{ property_type.name }}</b> for instance <b>{{ instance.name }}</b> that using raw type <b>{{ property_type.property_type.raw_type }}</b> with limitation :</p>
     {% endif %}
     {% if limitation_list %}
         <ul>
@@ -46,7 +46,11 @@
     {% endif %}
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form | crispy }}
+        {% if old_property and old_property.property_type.raw_type == 'markdown' %}
+            {{ form }}
+        {% else %}
+            {{ form | crispy }}
+        {% endif %}
         <button class="btn btn-primary" type="submit">Submit</button>
     </form>
 {% endblock %}
@@ -63,4 +67,10 @@
     <script type="text/javascript" src="{% static 'plugins/js/resizable.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'plugins/js/emojis.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'martor/js/martor.bootstrap.min.js' %}"></script>
+    <script>
+        // Find element that include class name martor-field and set height to 500px;
+        document.querySelectorAll('.martor-field').forEach(function (element) {
+            element.style.height = '500px';
+        });
+    </script>
 {% endblock %}
