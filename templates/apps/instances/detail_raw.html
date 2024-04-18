@@ -32,7 +32,7 @@
     <p></p>
     <p>{{ object_property|length }}  {% if object_property|length == 1 %}property{% else %}properties{% endif %}</p>
     {% for property in object_property %}
-    <div class="row mb-3">
+    <div class="row mb-3 border-bottom pb-3">
         <div class="col-md-3">
             <p>{{ property.property_type.name }}</p>
             {% if user.is_authenticated %}
