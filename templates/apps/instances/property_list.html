@@ -34,7 +34,6 @@
                     <div class="element-card-body">
                         <h5 class="card-title">{{ property.property_type.name }}</h5>
                         <p class="card-text mb-0">Raw type : {{ property.property_type.get_raw_type_display }}</p>
-                        <p class="card-text mb-0">Existing ID : {{ property.id }}</p>
                         <a href="{% url 'apps_instance_property_form' instance.id property.property_type.id %}" class="btn btn-primary btn-sm"><i class="mdi mdi-pencil-plus" aria-hidden="true" style="font-size: 15px"></i> Edit</a>
                         <a href="{% url 'apps_property_type_detail' property.property_type.id %}" class="btn btn-primary btn-sm"><i class="mdi mdi-information" aria-hidden="true" style="font-size: 15px"></i> Detail</a>
                     </div>
