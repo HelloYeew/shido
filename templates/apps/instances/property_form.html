@@ -68,7 +68,7 @@
     <script type="text/javascript" src="{% static 'plugins/js/emojis.min.js' %}"></script>
     <script type="text/javascript" src="{% static 'martor/js/martor.bootstrap.min.js' %}"></script>
     <script>
-        // Find element that include class name martor-field and set height to 500px;
+        // From CSS bug, enable full screen mode for martor by default
         document.querySelectorAll('.martor-field').forEach(function (element) {
             element.style.height = '500px';
         });
